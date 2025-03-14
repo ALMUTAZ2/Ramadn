@@ -49,7 +49,7 @@
               <div class="bg-white/10 backdrop-blur-lg border-2 border-yellow-400/20 rounded-3xl p-8 text-center">
                   <i data-lucide="clock" class="w-16 h-16 mx-auto text-yellow-400 mb-4"></i>
                   <h2 class="text-2xl font-bold text-yellow-400 mb-4">النتائج غير متاحة حالياً</h2>
-                  <p class="text-gray-300 mb-6">سيتم عرض النتائج في تمام الساعة 8 مساءً</p>
+                  <p class="text-gray-300 mb-6">سيتم عرض النتائج في تمام الساعة 5 صباحاً</p>
                   <div id="time-until-results" class="text-green-400 mb-6"></div>
                   <button
                       onclick="location.href='index.html'"
@@ -113,26 +113,24 @@
 
           // التحقق من وقت عرض النتائج
           function checkResultsTime() {
-    const now = new Date();
-    const hours = now.getHours();
-    const resultsHour = 5; // 5 AM
+              const now = new Date();
+              const hours = now.getHours();
+              const resultsHour = 5; // 5 AM
 
-    // التحقق ما إذا كان الوقت الحالي بين 12 صباحاً و 5 صباحاً
-    if (hours >= 0 && hours < resultsHour) {
-        const remainingHours = resultsHour - hours;
-        document.getElementById('time-until-results').textContent = 
-            `سيتم عرض النتائج بعد ${remainingHours} ساعة`;
-        
-        document.getElementById('before-results-screen').classList.remove('hidden');
-        document.getElementById('leaderboard-screen').classList.add('hidden');
-        return false;
-    }
-    
-    document.getElementById('before-results-screen').classList.add('hidden');
-    document.getElementById('leaderboard-screen').classList.remove('hidden');
-    return true;
-}
-
+              if (hours >= 0 && hours < resultsHour) {
+                  const remainingHours = resultsHour - hours;
+                  document.getElementById('time-until-results').textContent = 
+                      `سيتم عرض النتائج بعد ${remainingHours} ساعة`;
+                  
+                  document.getElementById('before-results-screen').classList.remove('hidden');
+                  document.getElementById('leaderboard-screen').classList.add('hidden');
+                  return false;
+              }
+              
+              document.getElementById('before-results-screen').classList.add('hidden');
+              document.getElementById('leaderboard-screen').classList.remove('hidden');
+              return true;
+          }
 
           // جلب وعرض النتائج
           async function fetchAndDisplayResults() {
@@ -157,6 +155,26 @@
                       });
                   });
 
+                  const container = document.getElementById('leaderboard-container');
+
+                  // التحقق من وجود مشاركين
+                  if (scores.length === 0) {
+                      container.innerHTML = `
+                          <div class="bg-white/10 backdrop-blur-lg border-2 border-white/10 rounded-2xl p-8 text-center">
+                              <div class="mb-6">
+                                  <i data-lucide="users-x" class="w-20 h-20 mx-auto text-gray-400"></i>
+                              </div>
+                              <h3 class="text-2xl font-bold text-white mb-3">لا يوجد مشاركين اليوم</h3>
+                              <p class="text-gray-400 mb-6">لم يتم تسجيل أي نتائج في المسابقة حتى الآن</p>
+                              <div class="inline-block bg-gradient-to-r from-blue-600/20 to-blue-700/20 text-white px-6 py-3 rounded-xl">
+                                  كن أول المشاركين في المسابقة
+                              </div>
+                          </div>
+                      `;
+                      lucide.createIcons();
+                      return;
+                  }
+
                   // ترتيب النتائج حسب النقاط والوقت
                   scores.sort((a, b) => {
                       if (b.score !== a.score) {
@@ -165,7 +183,6 @@
                       return a.totalTime - b.totalTime;
                   });
 
-                  const container = document.getElementById('leaderboard-container');
                   container.innerHTML = scores.map((score, index) => {
                       const isTop3 = index < 3;
                       const position = index + 1;
@@ -198,6 +215,17 @@
                   lucide.createIcons();
               } catch (error) {
                   console.error('Error fetching results:', error);
+                  const container = document.getElementById('leaderboard-container');
+                  container.innerHTML = `
+                      <div class="bg-white/10 backdrop-blur-lg border-2 border-red-500/20 rounded-2xl p-8 text-center">
+                          <div class="mb-6">
+                              <i data-lucide="alert-triangle" class="w-20 h-20 mx-auto text-red-400"></i>
+                          </div>
+                          <h3 class="text-2xl font-bold text-white mb-3">حدث خطأ</h3>
+                          <p class="text-gray-400">عذراً، حدث خطأ أثناء تحميل النتائج. الرجاء المحاولة مرة أخرى</p>
+                      </div>
+                  `;
+                  lucide.createIcons();
               }
           }
 
