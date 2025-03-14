@@ -15,18 +15,48 @@
               font-family: 'Cairo', sans-serif;
           }
 
-          .trophy-1 { color: #FFD700; }
-          .trophy-2 { color: #C0C0C0; }
-          .trophy-3 { color: #CD7F32; }
-
-          @keyframes floatAnimation {
-              0% { transform: translateY(0px); }
-              50% { transform: translateY(-10px); }
-              100% { transform: translateY(0px); }
+          .crown {
+              animation: float 3s ease-in-out infinite;
           }
 
-          .float {
-              animation: floatAnimation 3s ease-in-out infinite;
+          @keyframes float {
+              0%, 100% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-10px) rotate(5deg); }
+          }
+
+          .winner-card {
+              transition: all 0.3s ease;
+          }
+          
+          .winner-card:hover {
+              transform: translateY(-5px);
+          }
+
+          .gradient-gold {
+              background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+          }
+          
+          .gradient-silver {
+              background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+          }
+          
+          .gradient-bronze {
+              background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+          }
+
+          @keyframes shimmer {
+              0% {
+                  background-position: -1000px 0;
+              }
+              100% {
+                  background-position: 1000px 0;
+              }
+          }
+
+          .loading-shimmer {
+              animation: shimmer 2s infinite linear;
+              background: linear-gradient(to right, #2a4365 4%, #1a365d 25%, #2a4365 36%);
+              background-size: 1000px 100%;
           }
       </style>
   </head>
@@ -37,49 +67,43 @@
               <div class="flex items-center gap-2">
                   <span id="day-name" class="text-blue-400"></span>
               </div>
+              <a href="index.html" class="flex items-center gap-2 text-yellow-400 hover:text-yellow-300">
+                  <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                  العودة للمسابقة
+              </a>
               <div class="flex items-center gap-2">
                   <span id="current-date" class="text-green-400"></span>
               </div>
           </div>
       </div>
 
-      <!-- شاشة قبل وقت عرض النتائج -->
-      <div id="before-results-screen" class="hidden min-h-screen text-white flex items-center justify-center p-6">
-          <div class="max-w-md w-full">
-              <div class="bg-white/10 backdrop-blur-lg border-2 border-yellow-400/20 rounded-3xl p-8 text-center">
-                  <i data-lucide="clock" class="w-16 h-16 mx-auto text-yellow-400 mb-4"></i>
-                  <h2 class="text-2xl font-bold text-yellow-400 mb-4">النتائج غير متاحة حالياً</h2>
-                  <p class="text-gray-300 mb-6">سيتم عرض النتائج في تمام الساعة 8 مساءً</p>
-                  <div id="time-until-results" class="text-green-400 mb-6"></div>
-                  <button
-                      onclick="location.href='index.html'"
-                      class="inline-block bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white px-8 py-3 rounded-xl"
-                  >
-                      العودة للصفحة الرئيسية
-                  </button>
-              </div>
+      <div class="container mx-auto px-4 py-12">
+          <div class="text-center mb-16">
+              <h1 class="text-4xl font-bold text-yellow-400 mb-4">🌙 متصدرو اليوم 🌙</h1>
+              <p class="text-white/80">أفضل المتسابقين في فوازير رمضان</p>
           </div>
-      </div>
 
-      <!-- شاشة المتصدرين -->
-      <div id="leaderboard-screen" class="hidden p-6">
-          <div class="max-w-4xl mx-auto">
-              <div class="text-center mb-8">
-                  <h1 class="text-3xl font-bold text-yellow-400 mb-2">🌙 المتصدرين 🌙</h1>
-                  <p class="text-white/80">نتائج مسابقة اليوم</p>
+          <div class="max-w-3xl mx-auto">
+              <!-- حالة التحميل -->
+              <div id="loading" class="space-y-4">
+                  <div class="loading-shimmer h-32 rounded-2xl"></div>
+                  <div class="loading-shimmer h-32 rounded-2xl"></div>
+                  <div class="loading-shimmer h-32 rounded-2xl"></div>
               </div>
 
-              <div class="grid gap-6" id="leaderboard-container">
-                  <!-- سيتم إضافة النتائج هنا -->
-              </div>
+              <!-- قائمة المتصدرين -->
+              <div id="winners-container" class="space-y-4 hidden"></div>
 
-              <div class="text-center mt-8">
-                  <button
-                      onclick="location.href='index.html'"
-                      class="inline-block bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 rounded-xl"
-                  >
-                      العودة للصفحة الرئيسية
-                  </button>
+              <!-- رسالة عدم وجود نتائج -->
+              <div id="no-results" class="hidden">
+                  <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center">
+                      <i data-lucide="info" class="w-16 h-16 mx-auto text-yellow-400 mb-4"></i>
+                      <h2 class="text-2xl font-bold text-white mb-2">لا توجد نتائج لليوم حتى الآن</h2>
+                      <p class="text-gray-300">كن أول المشاركين في مسابقة اليوم!</p>
+                      <a href="index.html" class="inline-block mt-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 rounded-xl">
+                          شارك الآن
+                      </a>
+                  </div>
               </div>
           </div>
       </div>
@@ -111,99 +135,119 @@
           }
           updateDateTime();
 
-          // التحقق من وقت عرض النتائج
-          function checkResultsTime() {
-              const now = new Date();
-              const hours = now.getHours();
-              const resultsHour = 6; // 8 PM
-
-              if (hours < resultsHour) {
-                  const remainingHours = resultsHour - hours;
-                  document.getElementById('time-until-results').textContent = 
-                      `سيتم عرض النتائج بعد ${remainingHours} ساعة`;
-                  
-                  document.getElementById('before-results-screen').classList.remove('hidden');
-                  document.getElementById('leaderboard-screen').classList.add('hidden');
-                  return false;
-              }
-              
-              document.getElementById('before-results-screen').classList.add('hidden');
-              document.getElementById('leaderboard-screen').classList.remove('hidden');
-              return true;
+          // تنسيق الوقت
+          function formatTime(time) {
+              const numericTime = parseFloat(time);
+              if (isNaN(numericTime)) return "0.00";
+              return numericTime.toFixed(2);
           }
 
-          // جلب وعرض النتائج
-          async function fetchAndDisplayResults() {
-              if (!checkResultsTime()) {
-                  return;
-              }
+          // إنشاء بطاقة الفائز
+          function createWinnerCard(player, rank) {
+              const rankConfig = {
+                  1: {
+                      gradient: 'gradient-gold',
+                      icon: '👑',
+                      label: 'المركز الأول',
+                      iconClass: 'crown'
+                  },
+                  2: {
+                      gradient: 'gradient-silver',
+                      icon: '🥈',
+                      label: 'المركز الثاني'
+                  },
+                  3: {
+                      gradient: 'gradient-bronze',
+                      icon: '🥉',
+                      label: 'المركز الثالث'
+                  }
+              };
 
-              try {
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0);
+              const config = rankConfig[rank];
+              const formattedTime = formatTime(player.totalTime);
 
-                  const snapshot = await db.collection('scores')
-                      .where('timestamp', '>=', today)
-                      .orderBy('timestamp', 'desc')
-                      .get();
-
-                  const scores = [];
-                  snapshot.forEach(doc => {
-                      scores.push({
-                          id: doc.id,
-                          ...doc.data()
-                      });
-                  });
-
-                  // ترتيب النتائج حسب النقاط والوقت
-                  scores.sort((a, b) => {
-                      if (b.score !== a.score) {
-                          return b.score - a.score;
-                      }
-                      return a.totalTime - b.totalTime;
-                  });
-
-                  const container = document.getElementById('leaderboard-container');
-                  container.innerHTML = scores.map((score, index) => {
-                      const isTop3 = index < 3;
-                      const position = index + 1;
-                      
-                      return `
-                          <div class="bg-white/10 backdrop-blur-lg border-2 ${isTop3 ? 'border-yellow-400/30' : 'border-white/10'} rounded-2xl p-6 relative overflow-hidden">
-                              ${isTop3 ? `
-                                  <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-yellow-400/5 to-transparent"></div>
-                              ` : ''}
-                              <div class="relative flex items-center gap-4">
-                                  <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center">
-                                      ${isTop3 ? `
-                                          <i data-lucide="trophy" class="w-8 h-8 trophy-${position} ${isTop3 ? 'float' : ''}"></i>
-                                      ` : `
-                                          <span class="text-2xl font-bold text-white/50">${position}</span>
-                                      `}
+              return `
+                  <div class="winner-card">
+                      <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border-2 border-${rank === 1 ? 'yellow' : rank === 2 ? 'gray' : 'yellow'}-400/20">
+                          <div class="flex items-center gap-4">
+                              <div class="flex-shrink-0">
+                                  <div class="${config.gradient} w-16 h-16 rounded-xl flex items-center justify-center">
+                                      <span class="text-2xl ${config.iconClass}">${config.icon}</span>
                                   </div>
-                                  <div class="flex-grow">
-                                      <h3 class="text-xl font-bold text-white mb-1">${score.playerName}</h3>
-                                      <div class="flex items-center gap-4 text-sm">
-                                          <span class="text-yellow-400">النقاط: ${score.score}</span>
-                                          <span class="text-blue-400">الوقت: ${score.totalTime.toFixed(2)} ثانية</span>
+                              </div>
+                              <div class="flex-grow">
+                                  <div class="text-sm text-gray-400">${config.label}</div>
+                                  <div class="text-xl font-bold text-white">${player.playerName}</div>
+                                  <div class="flex items-center gap-4 mt-2">
+                                      <div class="text-green-400">
+                                          <i data-lucide="target" class="w-4 h-4 inline-block mr-1"></i>
+                                          ${player.score} نقطة
+                                      </div>
+                                      <div class="text-yellow-400">
+                                          <i data-lucide="clock" class="w-4 h-4 inline-block mr-1"></i>
+                                          ${formattedTime} ثانية
                                       </div>
                                   </div>
                               </div>
                           </div>
-                      `;
-                  }).join('');
+                      </div>
+                  </div>
+              `;
+          }
 
-                  lucide.createIcons();
+          // عرض المتصدرين
+          async function displayTopPlayers() {
+              try {
+                  const now = new Date();
+                  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                  const endOfDay = new Date(startOfDay);
+                  endOfDay.setDate(endOfDay.getDate() + 1);
+
+                  const snapshot = await db.collection('scores')
+                      .where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(startOfDay))
+                      .where('timestamp', '<', firebase.firestore.Timestamp.fromDate(endOfDay))
+                      .get();
+
+                  const scores = [];
+                  snapshot.forEach(doc => {
+                      const data = doc.data();
+                      scores.push({
+                          playerName: data.playerName,
+                          score: data.score,
+                          totalTime: data.totalTime,
+                          timestamp: data.timestamp
+                      });
+                  });
+
+                  document.getElementById('loading').classList.add('hidden');
+
+                  if (scores.length > 0) {
+                      const topPlayers = scores
+                          .sort((a, b) => {
+                              if (b.score !== a.score) return b.score - a.score;
+                              return parseFloat(a.totalTime) - parseFloat(b.totalTime);
+                          })
+                          .slice(0, 3);
+
+                      const winnersContainer = document.getElementById('winners-container');
+                      winnersContainer.classList.remove('hidden');
+                      winnersContainer.innerHTML = topPlayers
+                          .map((player, index) => createWinnerCard(player, index + 1))
+                          .join('');
+                      lucide.createIcons();
+                  } else {
+                      document.getElementById('no-results').classList.remove('hidden');
+                  }
               } catch (error) {
-                  console.error('Error fetching results:', error);
+                  console.error('Error:', error);
+                  document.getElementById('loading').classList.add('hidden');
+                  document.getElementById('no-results').classList.remove('hidden');
               }
           }
 
           // تحديث النتائج كل دقيقة
-          setInterval(fetchAndDisplayResults, 60000);
-
-          // بدء عرض النتائج
-          fetchAndDisplayResults();
+          setInterval(displayTopPlayers, 60000);
+          displayTopPlayers();
       </script>
   </body>
   </html>
