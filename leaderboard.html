@@ -113,24 +113,26 @@
 
           // التحقق من وقت عرض النتائج
           function checkResultsTime() {
-              const now = new Date();
-              const hours = now.getHours();
-              const resultsHour = 5; // 8 PM
+    const now = new Date();
+    const hours = now.getHours();
+    const resultsHour = 5; // 5 AM
 
-              if (hours < resultsHour) {
-                  const remainingHours = resultsHour - hours;
-                  document.getElementById('time-until-results').textContent = 
-                      `سيتم عرض النتائج بعد ${remainingHours} ساعة`;
-                  
-                  document.getElementById('before-results-screen').classList.remove('hidden');
-                  document.getElementById('leaderboard-screen').classList.add('hidden');
-                  return false;
-              }
-              
-              document.getElementById('before-results-screen').classList.add('hidden');
-              document.getElementById('leaderboard-screen').classList.remove('hidden');
-              return true;
-          }
+    // التحقق ما إذا كان الوقت الحالي بين 12 صباحاً و 5 صباحاً
+    if (hours >= 0 && hours < resultsHour) {
+        const remainingHours = resultsHour - hours;
+        document.getElementById('time-until-results').textContent = 
+            `سيتم عرض النتائج بعد ${remainingHours} ساعة`;
+        
+        document.getElementById('before-results-screen').classList.remove('hidden');
+        document.getElementById('leaderboard-screen').classList.add('hidden');
+        return false;
+    }
+    
+    document.getElementById('before-results-screen').classList.add('hidden');
+    document.getElementById('leaderboard-screen').classList.remove('hidden');
+    return true;
+}
+
 
           // جلب وعرض النتائج
           async function fetchAndDisplayResults() {
